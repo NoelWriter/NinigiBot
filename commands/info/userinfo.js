@@ -7,7 +7,7 @@ module.exports.run = async (client, message) => {
         const Discord = require("discord.js");
         const { bank } = require('../../database/bank');
         const { Users } = require('../../database/dbObjects');
-        
+
 
         let memberFetch = await message.guild.members.fetch();
         let user = message.mentions.users.first();
@@ -29,11 +29,11 @@ module.exports.run = async (client, message) => {
 
         let userCache = client.users.cache.get(user.id);
         let memberCache = memberFetch.get(user.id);
-        if(!memberCache) return;
+        if (!memberCache) return;
         let memberRoles = memberCache.roles.cache.filter(element => element.name !== "@everyone");
 
         //balance check
-        let userBalance = `${Math.floor(bank.currency.getBalance(userCache.id))}💰`;
+        let userBalance = `${Math.floor(bank.currency.getBalance(userCache.id))}${globalVars.currency}`;
         let switchCode = bank.currency.getSwitchCode(userCache.id);
         let biography = bank.currency.getBiography(userCache.id);
         let birthday = bank.currency.getBirthday(userCache.id);
@@ -92,7 +92,8 @@ module.exports.run = async (client, message) => {
                 let emoji = null
                 if (activities[act].emoji) emoji = client.emojis.cache.get(activities[act].emoji.id)
                 if (emoji) customStatus = emoji.toString() + ' ';
-                customStatus += activities[act].state;
+                // activities[act].state !== null doesn't work, but "null" does. Added regular null just for completion's sake. I hate Javascript.
+                if (activities[act].state && activities[act].state !== null && activities[act].state !== "null") customStatus += activities[act].state;
             } else {
                 activityLog += activities[act].name;
                 if (activities[act].details || activities[act].state) activityLog += ': ';
@@ -121,7 +122,7 @@ module.exports.run = async (client, message) => {
             .addField("Availability:", userStatus, true)
             .addField("Balance:", userBalance, true)
         if (customStatus.length >= 1 && customStatus !== 'null') profileEmbed.addField("Custom Status:", customStatus, true);
-        if (birthday) profileEmbed.addField("Birthday:", birthdayParsed, true);
+        if (birthday && birthdayParsed) profileEmbed.addField("Birthday:", birthdayParsed, true);
         if (actBool == true) profileEmbed.addField("Activities:", activityLog, false);
         if (switchCode && switchCode !== 'None') profileEmbed.addField("Switch friend code:", switchCode, true);
         if (biography && biography !== 'None') profileEmbed.addField("Biography:", biography, false);

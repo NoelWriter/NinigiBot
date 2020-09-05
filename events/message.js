@@ -11,6 +11,7 @@ module.exports = (client, message) => {
     // Import globals
     let globalVars = require('./ready');
 
+
     // Ignore all bots
     if (message.author.bot) return;
 
@@ -61,7 +62,7 @@ ${Attachment.url}`;
         .addField(`Author ID:`, message.author.id, false)
         .addField(`Message content:`, message.content, false)
         .setImage(messageImage)
-        .setFooter(`DM passed through by ${client.config.botName}.`)
+        .setFooter(`DM passed through by ${client.user.tag}.`)
         .setTimestamp();
 
       return DMChannel.send(dmEmbed);

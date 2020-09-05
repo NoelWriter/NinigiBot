@@ -3,12 +3,16 @@ exports.run = async (client, message) => {
     let globalVars = require('../../events/ready');
     try {
         const { bank } = require('../../database/bank');
-        const input = message.content.slice(1).trim();
-        const [, , commandArgs] = input.match(/(\w+)\s*([\s\S]*)/);
+        const input = message.content.split(` `, 3);
         const currentAmount = bank.currency.getBalance(message.author.id);
-        const transferAmount = commandArgs.split(/ +/).find(arg => !/<@!?\d+>/.test(arg));
-        const transferTarget = message.mentions.users.first();
-        let userBalance = `${Math.floor(bank.currency.getBalance(message.author.id))}💰`;
+        let transferAmount = input[1];
+        let transferTarget = message.mentions.users.first();
+        if (!transferTarget) {
+            let userID = input[2];
+            transferTarget = client.users.cache.get(userID);
+        };
+        if(!transferTarget) return;
+        let userBalance = `${Math.floor(bank.currency.getBalance(message.author.id))}${globalVars.currency}`;
 
         if (transferTarget == message.author) return message.channel.send(`> You can't transfer money to yourself, ${message.author}.`)
         if (!transferAmount || isNaN(transferAmount)) return message.channel.send(`> You need to specify a valid number to transfer, ${message.author}.`);
@@ -18,7 +22,7 @@ exports.run = async (client, message) => {
         bank.currency.add(message.author.id, -transferAmount);
         bank.currency.add(transferTarget.id, transferAmount);
 
-        return message.channel.send(`> Successfully transferred ${transferAmount}💰 to ${transferTarget.tag}, ${message.author}.`);
+        return message.channel.send(`> Successfully transferred ${transferAmount}${globalVars.currency} to ${transferTarget.tag}, ${message.author}.`);
 
     } catch (e) {
         // log error

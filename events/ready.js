@@ -26,15 +26,16 @@ module.exports = async (client) => {
   };
 };
 
-module.exports.birthRole = "birthday";
+module.exports.birthdayRole = "744719808058228796";
 module.exports.botChannelID = "614979959156375567";
+module.exports.currency = "💰";
 module.exports.embedColor = "#219DCD";
 module.exports.lackPerms = `you do not have the required permissions to do this.`;
 module.exports.prefix = "?";
-module.exports.stanChannelID = "665274079397281835"
+module.exports.eventChannelID = "665274079397281835";
 module.exports.stanRole = "stan";
 module.exports.starboardLimit = 3;
-
+module.exports.battling = {yes:false};
 module.exports.totalCommands = 0;
 module.exports.totalLogs = 0;
 module.exports.totalMessages = 0;
